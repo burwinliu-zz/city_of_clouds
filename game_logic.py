@@ -152,7 +152,7 @@ class Game:
         for i in formatted_str:
             print(i)
         counter_row = self._format_print_game()[1]
-        counter_row = counter_row * 2
+        counter_row = counter_row * 3
         under_print = " "
         under_print += '-' * counter_row
         under_print += ' '
@@ -214,17 +214,6 @@ class Game:
             interesting_item = item[-1]
             return self._test_bottom(interesting_item[0] + 1, interesting_item[1])
 
-    def _format_element(self, column: int, row: int) -> str:
-        """
-        :param column: int
-        :param row: int
-        :return: str
-
-        format the game into their proper string state, and returns that string state
-        """
-        beginning, end = self._glossary_of_states[self._state[row][column]]
-        return beginning + end
-
     def _detect_change(self) -> [[int, int, str]]:
         """
         :return: [[int, int, str]]
@@ -278,6 +267,17 @@ class Game:
                             state[row + 1][column] = state[row][column]
                             state[row][column] = ' '
         return state
+
+    def _format_element(self, column: int, row: int) -> str:
+        """
+        :param column: int
+        :param row: int
+        :return: str
+
+        format the game into their proper string state, and returns that string state
+        """
+        beginning, end = self._glossary_of_states[self._state[row][column]]
+        return beginning + str(self._state[row][column]) + end
 
     def _find_item(self, item_to_look_for: int or None) -> [[int, int, str]]:
         """
