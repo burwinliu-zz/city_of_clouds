@@ -1,7 +1,6 @@
 import pygame
 
-
-class Ship:
+class Octocat:
     def __init__(self, screen):
         self.image = pygame.image.load('')
         self.screen = screen
