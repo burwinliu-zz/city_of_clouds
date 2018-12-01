@@ -107,6 +107,11 @@ class Game:
         """
         return self._format_print_game()[0]
 
+    def set_lightning(self, falling_pos: int):
+        pass
+
+    def search(self, parameter: int):
+
     def move_left(self):
         self._cat_pos[1] -= 1
 
