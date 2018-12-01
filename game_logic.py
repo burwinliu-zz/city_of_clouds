@@ -113,10 +113,6 @@ class Game:
         Updates the game according to necessary requirements and fulfills all necessary steps to
         move the game forward according to everything that has been changed
         """
-        self._check_fallers_and_landed()
-        if self._game_over:
-            print("GAME OVER")
-            return
         to_change = self._detect_change()
         if self._has_bottom():
             if self._landed:
@@ -128,19 +124,11 @@ class Game:
                 self._landed = False
                 return
         for temp in to_change:
-            self._game[temp[0] + 1][temp[1]] = temp[2]
             self._state[temp[0] + 1][temp[1]] = FALLING
-        if self._test_bottom(0, self._column_drop):
-            self.print_game()
-            self._game_over = True
-            print("GAME OVER")
-            return
         self._state[0][self._column_drop] = FALLING
-        self._board_fall()
         if not self._landed:
             self._check_bottom_and_set_to_landed()
         self.print_game()
-        self._check_fallers_and_landed()
 
     def print_game(self) -> None:
         """
@@ -157,32 +145,6 @@ class Game:
         under_print += '-' * counter_row
         under_print += ' '
         print(under_print)
-
-    def _board_fall(self) -> None:
-        """
-        :return: None
-
-        sets the boards item to falling
-        """
-        self._has_faller = True
-        self._landed = False
-        for row in range(self._row):
-            for column in range(self._column):
-                if self._state[row][column] != EMPTY:
-                    self._state[row][column] = FALLING
-
-    def _board_landed(self) -> None:
-        """
-        :return: None
-
-        sets the board's item to landed
-        """
-        self._has_faller = False
-        self._landed = True
-        for row in range(self._row):
-            for column in range(self._column):
-                if self._state[row][column] != EMPTY:
-                    self._state[row][column] = ON_FIRE
 
     def _test_bottom(self, target_row: int, column: int) -> bool:
         """
@@ -205,8 +167,7 @@ class Game:
 
         check if it in the faller has a bottom underneath it
         """
-        self._check_fallers_and_landed()
-        if self._has_faller or self._landed:
+        if self._landed:
             item = self._find_item(None)
         else:
             return False
@@ -296,29 +257,6 @@ class Game:
                 if self._state[row][column] == item_to_look_for:
                     result.append([row, column, self._state[row][column]])
         return result
-
-    def _check_fallers_and_landed(self) -> None:
-        """
-        :return: None
-
-        check if the items are falling or landed or matched or frozen and adjusts
-        the states accordingly
-        """
-        for rows in self._state:
-            for elements in rows:
-                if elements == FALLING:
-                    self._has_faller = True
-                    self._landed = False
-                    self._board_fall()
-                    return
-                elif elements == ON_FIRE:
-                    self._landed = True
-                    self._has_faller = False
-                    self._board_landed()
-                    return
-        self._has_faller = False
-        self._landed = False
-        self._match = False
 
     def _check_bottom_and_set_to_landed(self):
         """
