@@ -9,15 +9,16 @@ _INITIAL_HEIGHT = 600
 _BACKGROUND_COLOR = pygame.Color(255, 255, 255)
 _PLAYER_COLOR = pygame.Color(0, 0, 128)
 
-
 class CloudGame:
     def __init__(self):
-        cloud_game = game_logic.Game(10, 8, 6, 5)
+        self.cloud_game = game_logic.Game(10, 8, 6, 5)
         self._running = True
         self._surface = None
 
     def run_game(self):
         pygame.init()
+        screen = pygame.display.set_mode(800, 500) # TODO : Make sprites take in screen param
+        pygame.display.set_caption("Octocat Faces the Wrath of Zeus")
         try:
             while self._running:
                 self._create_surface((_INITIAL_WIDTH, _INITIAL_HEIGHT))
@@ -29,9 +30,9 @@ class CloudGame:
     # Left and right movement
     def check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
-            cloud_game.move_right()
+            self.cloud_game.move_right()
         elif event.key == pygame.K_LEFT:
-            cloud_game.move_left()
+            self.cloud_game.move_left()
                   
     def _handle_events(self) -> None:
         for event in pygame.event.get():
