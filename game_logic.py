@@ -2,6 +2,8 @@ FALLING = 0
 ON_FIRE = 1
 EMPTY = 2
 BUILDING = 3
+CLOUD = 4
+CAT = 5
 
 
 class Game:
@@ -16,7 +18,6 @@ class Game:
         self._freeze_state = False
         self._game_over = False
         self._landed = False
-        self._game = list()
         self._state = list()
         self._lighting = list()
         self._building_height = building
@@ -27,7 +28,8 @@ class Game:
         self._glossary_of_states = {
                                     EMPTY: [' ', ' '],
                                     FALLING: ['[', ']'],
-                                    ON_FIRE: ['|', '|']
+                                    ON_FIRE: ['|', '|'],
+                                    CLOUD: ['*', '*']
                                     }
 
     def create_clear_board(self) -> None:
@@ -36,20 +38,16 @@ class Game:
 
         creates a game state for the self._state and self._game attributes
         """
-        result = []
         state = []
         i = 0
         while i < self._row:
             j = 0
-            result.append([" "])
             state.append([EMPTY])
             while j < self._column - 1:
-                result[i].append(" ")
                 state[i].append(EMPTY)
                 j += 1
             i += 1
         self._state = state
-        self._game = result
 
     def get_game_over(self) -> bool:
         """
@@ -66,9 +64,9 @@ class Game:
         returns list that represents game
         """
         result = list()
-        for i in range(len(self._game)):
+        for i in range(len(self._state)):
             result.append([])
-            for element in self._game[i]:
+            for element in self._state[i]:
                 result[i].append(element)
         return result
 
@@ -84,9 +82,8 @@ class Game:
             game_copy.append([])
             state_copy.append([])
             for column in range(self._column):
-                game_copy[row].append(self._game[row][column])
                 state_copy[row].append(self._state[row][column])
-        return [game_copy, state_copy]
+        return state_copy
 
     def get_state(self) -> [[int]]:
         """
@@ -124,8 +121,7 @@ class Game:
         if self._has_bottom():
             if self._landed:
                 for temp in to_change:
-                    self._game[temp[0]][temp[1]] = temp[2]
-                    self._state[temp[0]][temp[1]] = ON_FIRE
+                    self._state[temp[0]][temp[1]] = FALLING
                 self.print_game()
                 if self._game_over:
                     print("GAME OVER")
@@ -156,7 +152,7 @@ class Game:
         for i in formatted_str:
             print(i)
         counter_row = self._format_print_game()[1]
-        counter_row = counter_row * 3
+        counter_row = counter_row * 2
         under_print = " "
         under_print += '-' * counter_row
         under_print += ' '
@@ -199,7 +195,7 @@ class Game:
         """
         if target_row >= self._row:
             return True
-        if self._state[target_row][column] == EMPTY and self._game[target_row][column] != ' ':
+        if self._state[target_row][column] == EMPTY:
             return True
         return False
 
@@ -227,7 +223,7 @@ class Game:
         format the game into their proper string state, and returns that string state
         """
         beginning, end = self._glossary_of_states[self._state[row][column]]
-        return beginning + self._game[row][column] + end
+        return beginning + end
 
     def _detect_change(self) -> [[int, int, str]]:
         """
@@ -241,8 +237,7 @@ class Game:
             column = 0
             while column < self._column:
                 if self._state[row][column] == FALLING:
-                    to_change.append([row, column, self._game[row][column]])
-                    self._game[row][column] = ' '
+                    to_change.append([row, column, self._state[row][column]])
                 column += 1
             row += 1
         return to_change
@@ -253,7 +248,7 @@ class Game:
 
         formats the game so that it may print out
         """
-        state = self._game
+        state = self._state
         result = []
         counter_column = 0
         counter_row = 0
@@ -295,11 +290,11 @@ class Game:
         for column in range(self._column):
             for row in range(self._row):
                 if item_to_look_for is None:
-                    if self._state[row][column] != FROZEN:
-                        result.append([row, column, self._game[row][column]])
+                    if self._state[row][column] != EMPTY:
+                        result.append([row, column, self._state[row][column]])
                         continue
                 if self._state[row][column] == item_to_look_for:
-                    result.append([row, column, self._game[row][column]])
+                    result.append([row, column, self._state[row][column]])
         return result
 
     def _check_fallers_and_landed(self) -> None:
@@ -336,8 +331,7 @@ class Game:
         for element in item:
             if element[0] + 1 == self._row:
                 change_items = True
-            elif self._state[element[0] + 1][element[1]] == EMPTY and \
-                    self._game[element[0] + 1][element[1]] != ' ':
+            elif self._state[element[0] + 1][element[1]] == EMPTY:
                 change_items = True
         if change_items:
             self._landed = True
