@@ -1,7 +1,9 @@
 import pygame
-import game_logic.py
+import game_logic as gl
 from lightning import Lightning
-from octocat import Octocat
+import octocat as oc
+import key_events as ke
+import building as b
 
 _FRAME_RATE = 30
 _INITIAL_WIDTH = 600
@@ -12,12 +14,13 @@ _PLAYER_COLOR = pygame.Color(0, 0, 128)
 
 class CloudGame:
     def __init__(self):
-        cloud_game = game_logic.Game(10, 8, 6, 5)
+        cloud_game = gl.Game(10, 8, 6, 5)
         self._running = True
         self._surface = None
 
     def run_game(self):
         pygame.init()
+        screen = pygame.display.set_mode((_INITIAL_WIDTH, _INITIAL_HEIGHT))
         try:
             while self._running:
                 self._create_surface((_INITIAL_WIDTH, _INITIAL_HEIGHT))
@@ -58,5 +61,31 @@ class CloudGame:
         self._running = False
 
 
+
 if __name__ == '__main__':
     CloudGame().run_game()
+    game = gl.Game(10, 8, 6, 3)
+    game.create_clear_board()
+    game.get_state()
+
+    building = b.Building(screen)
+    cat = oc.Octocat(screen)
+    while True:
+        ke.check_keydown_events()
+        result = game.get_state()
+        for row in result:
+            for x in row:
+                if x == '`5`':
+                    cat.blitme()
+                if x == '*4*':
+
+                if x == '~3~':
+                    building.blitme()
+
+
+
+
+
+
+
+

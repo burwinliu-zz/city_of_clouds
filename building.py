@@ -11,5 +11,8 @@ class Building(Sprite):
    
     def set_on_fire(self):
       self.onFire = True
-    
-  
+
+
+    def blitme(self):
+        """draws octocat at current location"""
+        self.screen.blit(self.image, self.rect)
