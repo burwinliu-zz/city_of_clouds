@@ -1,4 +1,4 @@
-FALLING = 0
+LIGHTNING = 0
 ON_FIRE = 1
 EMPTY = 2
 BUILDING = 3
@@ -18,15 +18,16 @@ class Game:
         self._game_over = False
         self._state = list()
         self._lighting = list()
-        self._cat_pos = [0, 0]
+        self._fire = list()
+        self._times_fire_happened = 0
+        self._cat_pos = [height, 0]
         self._building_height = building
         self._column = column
         self._row = row
         self._height = height
-        self._column_drop = 0
         self._glossary_of_states = {
                                     EMPTY: [' ', ' '],
-                                    FALLING: ['[', ']'],
+                                    LIGHTNING: ['/', '/'],
                                     ON_FIRE: ['|', '|'],
                                     CLOUD: ['*', '*'],
                                     BUILDING: ['~', '~'],
@@ -43,8 +44,16 @@ class Game:
         i = 0
         while i < self._row:
             j = 0
-            state.append([EMPTY])
-            while j < self._column - 1:
+            state.append([])
+            while j < self._column:
+                if i >= self._building_height:
+                    state[i].append(BUILDING)
+                    j += 1
+                    continue
+                if self._height + 1 == i:
+                    state[i].append(CLOUD)
+                    j += 1
+                    continue
                 state[i].append(EMPTY)
                 j += 1
             i += 1
@@ -150,10 +159,23 @@ class Game:
         self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
 
     def _update_lightning(self):
-        pass
+        for element in self._lighting:
+            element[0] += 1
+            element[1] -= 1
+            for row in range(element[0]):
+                if self._state[row][element[1]] == BUILDING:
+                    self._state[row][element[1]] = ON_FIRE
+                    self._fire.append()
+                    self._lighting.remove(element)
+                    continue
+                if self._state[row][element[1]] == CAT:
+                    continue
+                self._state[row][element[1]] = LIGHTNING
 
     def _update_building(self):
-        pass
+        if len(self._fire) != 0:
+            pass
+
 
     def _format_print_game(self) -> [[[str]], int]:
         """
