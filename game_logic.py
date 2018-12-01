@@ -115,19 +115,7 @@ class Game:
         """
         to_change = self._detect_change()
         if self._has_bottom():
-            if self._landed:
-                for temp in to_change:
-                    self._state[temp[0]][temp[1]] = FALLING
-                self.print_game()
-                if self._game_over:
-                    print("GAME OVER")
-                self._landed = False
-                return
-        for temp in to_change:
-            self._state[temp[0] + 1][temp[1]] = FALLING
-        self._state[0][self._column_drop] = FALLING
-        if not self._landed:
-            self._check_bottom_and_set_to_landed()
+            pass
         self.print_game()
 
     def print_game(self) -> None:
@@ -258,22 +246,4 @@ class Game:
                     result.append([row, column, self._state[row][column]])
         return result
 
-    def _check_bottom_and_set_to_landed(self):
-        """
-        :return: None
-
-        makes sure that as they land they are set to frozen
-        """
-        item = self._find_item(FALLING)
-        change_items = False
-        for element in item:
-            if element[0] + 1 == self._row:
-                change_items = True
-            elif self._state[element[0] + 1][element[1]] == EMPTY:
-                change_items = True
-        if change_items:
-            self._landed = True
-            self._has_faller = False
-            for element in item:
-                self._state[element[0]][element[1]] = ON_FIRE
 
