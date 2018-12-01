@@ -106,6 +106,12 @@ class Game:
         """
         return self._format_print_game()[0]
 
+    def move_left(self):
+        pass
+
+    def move_right(self):
+        pass
+
     def update_game(self) -> None:
         """
         :return: None
