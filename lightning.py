@@ -1,8 +1,10 @@
 import pygame
 import random
+from pygame.sprite import Sprite
 
-class Lightning:
+class Lightning(Sprite):
     def __init__(self, screen):
+        super(Lightning, self).__init__()
         self.screen = screen
 
         #load the lightning  image
