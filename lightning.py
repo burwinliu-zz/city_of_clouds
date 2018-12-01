@@ -1,7 +1,7 @@
 import pygame
 import random
 
-class Lightning():
+class Lightning:
     def __init__(self, screen):
         self.screen = screen
 
