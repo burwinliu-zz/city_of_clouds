@@ -1,11 +1,6 @@
 import pygame
 
-<<<<<<< Updated upstream
-
-class Ship:
-=======
 class Octocat:
->>>>>>> Stashed changes
     def __init__(self, screen):
         self.image = pygame.image.load('')
         self.screen = screen

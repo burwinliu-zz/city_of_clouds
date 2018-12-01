@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Lightning():
     def __init__(self, screen):
@@ -8,6 +9,21 @@ class Lightning():
         self.image = pygame.image.load('')
 
         #get the lightning rectangle
-        self.rect = self.image.get_rect()
+        self.lightning = self.image.get_rect()
         self.screen_rect = screen.get_rect()
+
+        #randomizes x position of
+
+        #creates lightning and sets to correct position
+        self.lightning.bottom = 0
+        self.lightning.centerx = random.randint(0, 600)
+
+    def update(self):
+        """updates position of lightning"""
+        self.lightning.y += 1
+
+    def blitme(self):
+        """draws the lightning on the screen"""
+        self.screen.blit(self.image, self.lightning)
+
 
