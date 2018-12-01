@@ -164,8 +164,11 @@ class Game:
             element[1] -= 1
             for row in range(element[0]):
                 if self._state[row][element[1]] == BUILDING:
-                    self._state[row][element[1]] = ON_FIRE
-                    self._fire.append()
+                    items = self.search(BUILDING)
+                    for item in items:
+                        if item[1] == element[1]:
+                            self._state[item[0]][item[1]] = ON_FIRE
+                    self._fire.append(element[1])
                     self._lighting.remove(element)
                     continue
                 if self._state[row][element[1]] == CAT:
@@ -174,8 +177,12 @@ class Game:
 
     def _update_building(self):
         if len(self._fire) != 0:
-            pass
-
+            for element in self._fire:
+                items = self.search(ON_FIRE)
+                for item in items:
+                    if item[1] == element[1]:
+                        self._state[item[0]][item[1]] = BUILDING
+                        self._state[item[0]][item[1]+1] = ON_FIRE
 
     def _format_print_game(self) -> [[[str]], int]:
         """
