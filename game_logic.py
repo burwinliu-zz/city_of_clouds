@@ -15,9 +15,7 @@ class Game:
 
         Initializes a game object
         """
-        self._freeze_state = False
         self._game_over = False
-        self._landed = False
         self._state = list()
         self._lighting = list()
         self._cat_pos = [0, 0]
@@ -30,7 +28,9 @@ class Game:
                                     EMPTY: [' ', ' '],
                                     FALLING: ['[', ']'],
                                     ON_FIRE: ['|', '|'],
-                                    CLOUD: ['*', '*']
+                                    CLOUD: ['*', '*'],
+                                    BUILDING: ['~', '~'],
+                                    CAT: ['`', '`']
                                     }
 
     def create_clear_board(self) -> None:
@@ -108,15 +108,27 @@ class Game:
         return self._format_print_game()[0]
 
     def set_lightning(self, falling_pos: int):
-        pass
+        for element in self._lighting:
+            if element[1] == falling_pos:
+                return
+        self._lighting.append([0, falling_pos])
 
     def search(self, parameter: int):
+        result = list()
+        for row in range(self._row):
+            for column in range(self._column):
+                if self._state[row][column] == parameter:
+                    result.append([row, column])
+        return result
 
     def move_left(self):
         self._cat_pos[1] -= 1
 
     def move_right(self):
         self._cat_pos[1] += 1
+
+    def catch_lightning(self):
+        pass
 
     def update_game(self) -> None:
         """
@@ -125,55 +137,23 @@ class Game:
         Updates the game according to necessary requirements and fulfills all necessary steps to
         move the game forward according to everything that has been changed
         """
+        self._update_cat_pos()
+        self._update_lightning()
+        self._update_building()
+        self._print_game()
+
+    def _update_cat_pos(self):
         if self._state[self._cat_pos[0]][self._cat_pos[1]] != CAT:
+            todo = self.search(CAT)
+            for pos in todo:
+                self._state[pos[0]][pos[1]] = EMPTY
+        self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
 
-            pass
-        self.print_game()
+    def _update_lightning(self):
+        pass
 
-    def print_game(self) -> None:
-        """
-        :return: None
-
-        prints out the games that are in self._game
-        """
-        formatted_str = self._format_print_game()[0]
-        for i in formatted_str:
-            print(i)
-        counter_row = self._format_print_game()[1]
-        counter_row = counter_row * 3
-        under_print = " "
-        under_print += '-' * counter_row
-        under_print += ' '
-        print(under_print)
-
-    def _test_bottom(self, target_row: int, column: int) -> bool:
-        """
-        :param target_row: int
-        :param column: int
-        :return: bool
-
-        tests if at the targetrow and column if there is an item frozen with something
-        other then a blank space
-        """
-        if target_row >= self._row:
-            return True
-        if self._state[target_row][column] == EMPTY:
-            return True
-        return False
-
-    def _has_bottom(self) -> bool:
-        """
-        :return: bool
-
-        check if it in the faller has a bottom underneath it
-        """
-        if self._landed:
-            item = self._find_item(None)
-        else:
-            return False
-        if len(item) != 0:
-            interesting_item = item[-1]
-            return self._test_bottom(interesting_item[0] + 1, interesting_item[1])
+    def _update_building(self):
+        pass
 
     def _format_print_game(self) -> [[[str]], int]:
         """
@@ -223,22 +203,18 @@ class Game:
         beginning, end = self._glossary_of_states[self._state[row][column]]
         return beginning + str(self._state[row][column]) + end
 
-    def _find_item(self, item_to_look_for: int or None) -> [[int, int, str]]:
+    def _print_game(self) -> None:
         """
-        :param item_to_look_for: int or None
-        :return: [[int, int, str]]
+        :return: None
 
-        return a list with all items that are being searched for or those that are not frozen
+        prints out the games that are in self._game
         """
-        result = list()
-        for column in range(self._column):
-            for row in range(self._row):
-                if item_to_look_for is None:
-                    if self._state[row][column] != EMPTY:
-                        result.append([row, column, self._state[row][column]])
-                        continue
-                if self._state[row][column] == item_to_look_for:
-                    result.append([row, column, self._state[row][column]])
-        return result
-
-
+        formatted_str = self._format_print_game()[0]
+        for i in formatted_str:
+            print(i)
+        counter_row = self._format_print_game()[1]
+        counter_row = counter_row * 3
+        under_print = " "
+        under_print += '-' * counter_row
+        under_print += ' '
+        print(under_print)
