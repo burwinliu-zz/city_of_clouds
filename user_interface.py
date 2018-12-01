@@ -1,6 +1,7 @@
 import pygame
 import game_logic.py
-
+from lightning import Lightning
+from octocat import Octocat
 
 _FRAME_RATE = 30
 _INITIAL_WIDTH = 600
