@@ -20,6 +20,7 @@ class Game:
         self._landed = False
         self._state = list()
         self._lighting = list()
+        self._cat_pos = [0, 0]
         self._building_height = building
         self._column = column
         self._row = row
@@ -107,10 +108,10 @@ class Game:
         return self._format_print_game()[0]
 
     def move_left(self):
-        pass
+        self._cat_pos[1] -= 1
 
     def move_right(self):
-        pass
+        self._cat_pos[1] += 1
 
     def update_game(self) -> None:
         """
@@ -119,8 +120,8 @@ class Game:
         Updates the game according to necessary requirements and fulfills all necessary steps to
         move the game forward according to everything that has been changed
         """
-        to_change = self._detect_change()
-        if self._has_bottom():
+        if self._state[self._cat_pos[0]][self._cat_pos[1]] != CAT:
+
             pass
         self.print_game()
 
@@ -168,23 +169,6 @@ class Game:
         if len(item) != 0:
             interesting_item = item[-1]
             return self._test_bottom(interesting_item[0] + 1, interesting_item[1])
-
-    def _detect_change(self) -> [[int, int, str]]:
-        """
-        :return: [[int, int, str]]
-
-        returns what is falling and their values in the self._game
-        """
-        row = 0
-        to_change = []
-        while row < self._row:
-            column = 0
-            while column < self._column:
-                if self._state[row][column] == FALLING:
-                    to_change.append([row, column, self._state[row][column]])
-                column += 1
-            row += 1
-        return to_change
 
     def _format_print_game(self) -> [[[str]], int]:
         """
