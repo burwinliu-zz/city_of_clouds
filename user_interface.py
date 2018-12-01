@@ -1,5 +1,5 @@
 import pygame
-import game_logic
+import game_logic.py
 
 
 _FRAME_RATE = 30
@@ -25,6 +25,13 @@ class CloudGame:
         finally:
             pygame.quit()
 
+    # Left and right movement
+    def check_keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            cloud_game.move_right()
+        elif event.key == pygame.K_LEFT:
+            cloud_game.move_left()
+                  
     def _handle_events(self) -> None:
         for event in pygame.event.get():
             self._handle_event(event)
