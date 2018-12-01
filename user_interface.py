@@ -1,4 +1,5 @@
 import pygame
+import game_logic
 
 
 _FRAME_RATE = 30
@@ -10,6 +11,7 @@ _PLAYER_COLOR = pygame.Color(0, 0, 128)
 
 class CloudGame:
     def __init__(self):
+        cloud_game = game_logic.Game(10, 8, 6, 5)
         self._running = True
         self._surface = None
 
