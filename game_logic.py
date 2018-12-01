@@ -5,7 +5,8 @@ BUILDING = 3
 
 
 class Game:
-    def __init__(self, column: int, row: int, building: int, height: int) -> None:
+    def __init__(self, column: int, row: int, building: int, height: int)\
+            -> None:
         """
         :param column: int
         :param row: int
@@ -108,19 +109,6 @@ class Game:
         """
         return self._format_print_game()[0]
 
-    def set_faller(self, column: int) -> None:
-        """
-        :param elements: [str]
-        :param column: int
-        :return: None
-
-        Updates which items are falling as long as there is nothing already falling
-        """
-        if column > self._column:
-            return
-        if len(self._lightning) == 3:
-            self._column_drop = column - 1
-
     def update_game(self) -> None:
         """
         :return: None
@@ -133,7 +121,6 @@ class Game:
             print("GAME OVER")
             return
         to_change = self._detect_change()
-        self._freeze_the_board()
         if self._has_bottom():
             if self._landed:
                 for temp in to_change:
@@ -147,19 +134,15 @@ class Game:
         for temp in to_change:
             self._game[temp[0] + 1][temp[1]] = temp[2]
             self._state[temp[0] + 1][temp[1]] = FALLING
-        if self._column_drop is not None and len(self._faller) != 0:
-            if self._test_bottom(0, self._column_drop):
-                self.print_game()
-                self._game_over = True
-                print("GAME OVER")
-                return
-            self._game[0][self._column_drop] = self._faller[0]
-            self._faller.pop(0)
-            self._state[0][self._column_drop] = FALLING
-            self._board_fall()
+        if self._test_bottom(0, self._column_drop):
+            self.print_game()
+            self._game_over = True
+            print("GAME OVER")
+            return
+        self._state[0][self._column_drop] = FALLING
+        self._board_fall()
         if not self._landed:
             self._check_bottom_and_set_to_landed()
-        self._detect_match()
         self.print_game()
         self._check_fallers_and_landed()
 
