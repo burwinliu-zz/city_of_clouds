@@ -1,4 +1,3 @@
-from History.pro4 import logic
 import pygame
 
 
@@ -9,10 +8,8 @@ _BACKGROUND_COLOR = pygame.Color(255, 255, 255)
 _PLAYER_COLOR = pygame.Color(0, 0, 128)
 
 
-class ColumnsGame:
+class CloudGame:
     def __init__(self):
-        self._game = logic.Game(6, 13)
-        self._game.create_clear_board()
         self._running = True
         self._surface = None
 
@@ -39,7 +36,6 @@ class ColumnsGame:
 
     def _handle_keys(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]
 
     def _draw_window(self):
         self._surface.fill(_BACKGROUND_COLOR)
@@ -53,4 +49,4 @@ class ColumnsGame:
 
 
 if __name__ == '__main__':
-    ColumnsGame().run_game()
+    CloudGame().run_game()
