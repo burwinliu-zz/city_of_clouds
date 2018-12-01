@@ -1,4 +1,8 @@
 import game_logic
+import pygame
+import sys
+from octocat import Octocat
+from lightning import Lightning
 
 
 if __name__ == '__main__':
