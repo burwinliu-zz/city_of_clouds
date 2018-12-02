@@ -2,7 +2,7 @@ import pygame
 import octocat as oc
 import game_logic as gl
 import user_interface as ui
-screen = pygame.display.set_mode((ui._INITIAL_WIDTH, ui._INITIAL_HEIGHT))
+screen = pygame.display.set_mode((600,600))
 game = gl.Game(10, 8, 6, 3)
 cat = oc.Octocat(screen)
 

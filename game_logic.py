@@ -60,6 +60,9 @@ class Game:
             i += 1
         self._state = state
 
+    def get_cat_pos(self):
+        return self._cat_pos
+
     def get_game_over(self) -> bool:
         """
         :return: self._game_over: boolean
