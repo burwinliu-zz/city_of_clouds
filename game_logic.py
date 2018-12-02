@@ -16,6 +16,7 @@ class Game:
         Initializes a game object
         """
         self._game_over = False
+        self._first_time = False
         self._state = list()
         self._lighting = list()
         self._fire = list()
@@ -120,7 +121,7 @@ class Game:
         for element in self._lighting:
             if element[1] == falling_pos:
                 return
-        self._lighting.append([0, falling_pos])
+        self._lighting.append([0, int(falling_pos)])
 
     def search(self, parameter: int):
         result = list()
@@ -160,29 +161,37 @@ class Game:
 
     def _update_lightning(self):
         for element in self._lighting:
-            element[0] += 1
+            self._remove_lightning(element)
+            if element[1] - 1 < 0 or element[0] + 1 >= self._row:
+                self._lighting.remove(element)
+                continue
             element[1] -= 1
+            if self._state[element[0]][element[1]] == BUILDING:
+                items = self.search(BUILDING)
+                for item in items:
+                    if item[1] == element[1]:
+                        self._state[item[0]][item[1]] = ON_FIRE
+                self._fire.append(element[1])
+                self._lighting.remove(element)
+                self._remove_lightning(element)
+                self._first_time = True
+                self._print_game()
+                continue
+            element[0] += 1
+            if element[1] < 0 or element[0] >= self._row:
+                continue
             for row in range(element[0]):
-                if self._state[row][element[1]] == BUILDING:
-                    items = self.search(BUILDING)
-                    for item in items:
-                        if item[1] == element[1]:
-                            self._state[item[0]][item[1]] = ON_FIRE
-                    self._fire.append(element[1])
-                    self._lighting.remove(element)
-                    continue
                 if self._state[row][element[1]] == CAT:
                     continue
                 self._state[row][element[1]] = LIGHTNING
 
     def _update_building(self):
-        if len(self._fire) != 0:
-            for element in self._fire:
-                items = self.search(ON_FIRE)
-                for item in items:
-                    if item[1] == element[1]:
-                        self._state[item[0]][item[1]] = BUILDING
-                        self._state[item[0]][item[1]+1] = ON_FIRE
+        if self._first_time:
+            print("Hmm")
+            # self._first_time = False
+            return
+        for element in self._fire:
+            self._move_fire(element)
 
     def _format_print_game(self) -> [[[str]], int]:
         """
@@ -231,6 +240,23 @@ class Game:
         """
         beginning, end = self._glossary_of_states[self._state[row][column]]
         return beginning + str(self._state[row][column]) + end
+
+    def _remove_lightning(self, element: [int, int]):
+        for row in range(element[0]):
+            if row >= self._building_height:
+                self._state[row][element[1]] = BUILDING
+                continue
+            if self._height + 1 == row:
+                print("woops")
+                self._state[row][element[1]] = CLOUD
+                continue
+            self._state[row][element[1]] = EMPTY
+
+    def _move_fire(self, column: int):
+        item = self.search(ON_FIRE)
+        for element in item:
+            if element[1] == column:
+                print(element[0], element[1])
 
     def _print_game(self) -> None:
         """

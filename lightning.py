@@ -8,7 +8,7 @@ class Lightning(Sprite):
         self.screen = screen
 
         #load the lightning  image
-        self.image = pygame.image.load('')
+        self.image = pygame.image.load('city_of_clouds/bolt-clipart-transparent-background-6.png')
 
         #get the lightning rectangle
         self.lightning = self.image.get_rect()
