@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 
 class Building(Sprite):
-"""Will choose randomly between a set of building images, will have"""
+    """Will choose randomly between a set of building images, will have"""
 
     def __init__(self, screen):
       super(Building, self).__init__()

@@ -20,7 +20,6 @@ class CloudGame:
 
     def run_game(self):
         pygame.init()
-        screen = pygame.display.set_mode((_INITIAL_WIDTH, _INITIAL_HEIGHT))
         try:
             while self._running:
                 self._create_surface((_INITIAL_WIDTH, _INITIAL_HEIGHT))
@@ -60,9 +59,11 @@ class CloudGame:
     def _stop_program(self) -> None:
         self._running = False
 
-
-
 if __name__ == '__main__':
+    screen = pygame.display.set_mode((_INITIAL_WIDTH, _INITIAL_HEIGHT))
+    building = pygame.image.load('')
+    building_rect = building.get_rect()
+
     CloudGame().run_game()
     game = gl.Game(10, 8, 6, 3)
     game.create_clear_board()
@@ -78,7 +79,7 @@ if __name__ == '__main__':
                 if x == '`5`':
                     cat.blitme()
                 if x == '*4*':
-
+                    screen.blit(building, building_rect)
                 if x == '~3~':
                     building.blitme()
 

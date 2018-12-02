@@ -2,7 +2,7 @@ import pygame
 
 class Octocat:
     def __init__(self, screen):
-        self.image = pygame.image.load('')
+        self.image = pygame.image.load('Octocat.png')
         self.screen = screen
 
         # get ship rectangle
@@ -16,17 +16,16 @@ class Octocat:
         self.center = float(self.rect.centerx)
 
         # movement flags
-     """  self.move_right = False
-        self.move_left = False"""
+        self.move_right = False
+        self.move_left = False
+    def moving_right(self):
+        self.move_right = True
 
-    """def update(self):
-        if self.move_right and self.rect.right < self.screen_rect.right:
-            self.center += 1
-        if self.move_left and self.rect.left > 0:
-            self.center -= 1
+    def moving_left(self):
+        self.move_left = True
 
-        # update rect object
-        self.rect.centerx = self.center """
+    def update(self):
+        self.rect.centerx = self.center
 
     def blitme(self):
         """draws octocat at current location"""
