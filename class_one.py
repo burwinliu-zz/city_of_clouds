@@ -11,9 +11,6 @@ def run_commands():
     column = int(input())
     game = game_logic.Game(column, rows, 6, 3)
     game.create_clear_board()
-    command_one = input()
-    if command_one == "EMPTY":
-        pass
     while not game.get_game_over():
         command_two = input().rstrip()
         if command_two is "":

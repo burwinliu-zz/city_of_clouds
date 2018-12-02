@@ -1,37 +1,45 @@
 import pygame
-import game_logic as gl
+
+
+_PLAYER_SPEED = 0.01
+
 
 class Octocat:
-    def __init__(self, screen):
+    def __init__(self):
         self.image = pygame.image.load('octocat.png')
-        self.screen = screen
-        game = gl.Game(10, 10, 7, 3)
-
         # get ship rectangle
-        temp = game.get_cat_pos()
-        self.rect = pygame.Rect((temp[1]/10, temp[0]/8),((200, 200)))
-        self.screen_rect = screen.get_rect()
+        top_left_x = 0.5 - .05 / 2
+        top_left_y = 0.5 - .05 / 2
+        self.top_left = (top_left_x, top_left_y)
 
+    def declare_top_left(self, top_left_x, top_left_y):
+        self.top_left = (top_left_x, top_left_y)
 
-        # start octocat on clouds
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
+    def get_top_left(self) -> (float, float):
+        return self._top_left
 
-        # store a decimal value for the cat's center
-        self.center = float(self.rect.centerx)
+    def move_left(self) -> None:
+        self._move(-_PLAYER_SPEED, 0)
 
-        # movement flags
-        self.move_right = False
-        self.move_left = False
-    def moving_right(self):
-        self.move_right = True
+    def move_right(self) -> None:
+        self._move(_PLAYER_SPEED, 0)
 
-    def moving_left(self):
-        self.move_left = True
+    def _move(self, delta_x: float, delta_y: float) -> None:
+        tl_x, tl_y = self._top_left
+        new_x = tl_x + delta_x
+        new_y = tl_y + delta_y
+        half_width = self.width() / 2
+        half_height = self.height() / 2
+        if new_x + half_width < 0.0:
+            new_x += 1.0
+        elif new_x + half_width > 1.0:
+            new_x -= 1.0
+        if new_y + half_height < 0.0:
+            new_y += 1.0
+        elif new_y + half_height > 1.0:
+            new_y -= 1.0
+        self._top_left = (new_x, new_y)
 
-    def update(self):
-        self.rect.centerx = self.center
-
-    def blitme(self):
+    def blitme(self, screen, rect):
         """draws octocat at current location"""
-        self.screen.blit(self.image, self.rect)
+        screen.blit(self.image, rect)

@@ -163,13 +163,16 @@ class Game:
         self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
 
     def _update_lightning(self):
+        added_fire = False
         for element in self._lighting:
             self._remove_lightning(element)
             if element[1] - 1 < 0 or element[0] + 1 >= self._row:
                 self._lighting.remove(element)
                 continue
-            element[1] -= 1
             if self._state[element[0]][element[1]] == BUILDING:
+                if added_fire is False:
+                    self._times_fire_happened += 1
+                    added_fire = True
                 items = self.search(BUILDING)
                 for item in items:
                     if item[1] == element[1]:
@@ -180,6 +183,7 @@ class Game:
                 self._first_time = True
                 self._print_game()
                 continue
+            element[1] -= 1
             element[0] += 1
             if element[1] < 0 or element[0] >= self._row:
                 continue
@@ -193,8 +197,8 @@ class Game:
             print("Hmm")
             # self._first_time = False
             return
-        for element in self._fire:
-            self._move_fire(element)
+        for column in self._fire:
+            self._move_fire(column)
 
     def _format_print_game(self) -> [[[str]], int]:
         """
@@ -246,6 +250,9 @@ class Game:
 
     def _remove_lightning(self, element: [int, int]):
         for row in range(element[0]):
+            if self._cat_pos[0] == row and element[1] == self._cat_pos[1]:
+                self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
+                continue
             if row >= self._building_height:
                 self._state[row][element[1]] = BUILDING
                 continue
@@ -259,7 +266,12 @@ class Game:
         item = self.search(ON_FIRE)
         for element in item:
             if element[1] == column:
-                print(element[0], element[1])
+                self._state[element[0]][element[1]] = BUILDING
+                self._state[element[0]][element[1] + 1] = ON_FIRE
+        for num in self._fire:
+            num -= 1
+            if num < 0:
+                self._fire.remove(num)
 
     def _print_game(self) -> None:
         """
