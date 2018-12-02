@@ -21,15 +21,15 @@ def run_commands():
             continue
         if command_two[0] == 'L':
             game.set_lightning(command_two[2])
-            game._print_game()
+            game.update_game()
             continue
         if command_two == '<':
             game.move_left()
-            game._print_game()
+            game.update_game()
             continue
         if command_two == '>':
             game.move_right()
-            game._print_game()
+            game.update_game()
             continue
         if command_two == "Q":
             return
