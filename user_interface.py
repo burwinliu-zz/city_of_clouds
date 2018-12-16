@@ -37,6 +37,8 @@ class CloudGame:
             self._cloud_game.move_right()
         elif event.key == pygame.K_LEFT:
             self._cloud_game.move_left()
+        if event.key == pygame.K_SPACE:
+            self._cloud_game.catch_lightning()
                   
     def _handle_events(self) -> None:
         for event in pygame.event.get():

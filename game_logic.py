@@ -4,6 +4,7 @@ EMPTY = 2
 BUILDING = 3
 CLOUD = 4
 CAT = 5
+ELECTROCUTED_CAT = 6
 
 
 class Game:
@@ -32,7 +33,8 @@ class Game:
                                     ON_FIRE: ['|', '|'],
                                     CLOUD: ['*', '*'],
                                     BUILDING: ['~', '~'],
-                                    CAT: ['`', '`']
+                                    CAT: ['`', '`'],
+                                    ELECTROCUTED_CAT: ['\\', '\\']
                                     }
 
     def create_clear_board(self) -> None:
@@ -166,7 +168,7 @@ class Game:
         added_fire = False
         for element in self._lighting:
             self._remove_lightning(element)
-            if element[1] - 1 < 0 or element[0] + 1 >= self._row:
+            if element[1] - 1 < 0:
                 self._lighting.remove(element)
                 continue
             if self._state[element[0]][element[1]] == BUILDING:
@@ -183,22 +185,19 @@ class Game:
                 self._first_time = True
                 self._print_game()
                 continue
-            element[1] -= 1
             element[0] += 1
             if element[1] < 0 or element[0] >= self._row:
                 continue
             for row in range(element[0]):
                 if self._state[row][element[1]] == CAT:
+                    self._state[row][element[1]] = ELECTROCUTED_CAT
                     continue
                 self._state[row][element[1]] = LIGHTNING
 
     def _update_building(self):
         if self._first_time:
-            print("Hmm")
             self._first_time = False
             return
-        for column in self._fire:
-            self._move_fire(column)
 
     def _format_print_game(self) -> [[[str]], int]:
         """
@@ -257,21 +256,9 @@ class Game:
                 self._state[row][element[1]] = BUILDING
                 continue
             if self._height + 1 == row:
-                print("woops")
                 self._state[row][element[1]] = CLOUD
                 continue
             self._state[row][element[1]] = EMPTY
-
-    def _move_fire(self, column: int):
-        item = self.search(ON_FIRE)
-        for element in item:
-            if element[1] == column:
-                self._state[element[0]][element[1]] = BUILDING
-                self._state[element[0]][element[1] - 1] = ON_FIRE
-        for num in self._fire:
-            num -= 1
-            if num < 0:
-                self._fire.remove(num)
 
     def _print_game(self) -> None:
         """
