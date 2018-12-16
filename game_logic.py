@@ -195,7 +195,7 @@ class Game:
     def _update_building(self):
         if self._first_time:
             print("Hmm")
-            # self._first_time = False
+            self._first_time = False
             return
         for column in self._fire:
             self._move_fire(column)
@@ -267,7 +267,7 @@ class Game:
         for element in item:
             if element[1] == column:
                 self._state[element[0]][element[1]] = BUILDING
-                self._state[element[0]][element[1] + 1] = ON_FIRE
+                self._state[element[0]][element[1] - 1] = ON_FIRE
         for num in self._fire:
             num -= 1
             if num < 0:

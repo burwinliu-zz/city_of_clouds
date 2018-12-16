@@ -17,15 +17,9 @@ class CloudGame:
         self.game_size = 10
         self.screen_width = _INITIAL_WIDTH
         self.screen_height = _INITIAL_HEIGHT
-        if self.screen_height < self.screen_width:
-            temp = self.screen_height
-        else:
-            temp = self.screen_width
-        self.array_width_height = temp/self.game_size
         self.game_size = 10
         self._running = True
         self._surface = None
-
 
     def run_game(self):
         pygame.init()

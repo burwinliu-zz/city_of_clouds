@@ -7,9 +7,7 @@ def run_commands():
 
     Runs the game in a UI version
     """
-    rows = int(input())
-    column = int(input())
-    game = game_logic.Game(column, rows, 6, 3)
+    game = game_logic.Game(10, 10, 6, 3)
     game.create_clear_board()
     while not game.get_game_over():
         command_two = input().rstrip()
