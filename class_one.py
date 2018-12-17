@@ -7,24 +7,28 @@ def run_commands():
 
     Runs the game in a UI version
     """
-    game = game_logic.Game(10, 10, 6, 3)
+    game = game_logic.Game(10, 10, 9, 3)
     game.create_clear_board()
     while not game.get_game_over():
         command_two = input().rstrip()
         if command_two is "":
-            game.update_game()
+            game.update_lightning()
             continue
         if command_two[0] == 'L':
             game.set_lightning(command_two[2])
-            game.update_game()
+            game.update_cat_pos()
+            game.update_lightning()
+            continue
+        if command_two == 'R':
+            game.catch_lightning()
             continue
         if command_two == '<':
             game.move_left()
-            game.update_game()
+            game.update_cat_pos()
             continue
         if command_two == '>':
             game.move_right()
-            game.update_game()
+            game.update_cat_pos()
             continue
         if command_two == "Q":
             return

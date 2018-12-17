@@ -19,7 +19,7 @@ class Game:
         self._game_over = False
         self._first_time = False
         self._state = list()
-        self._lighting = list()
+        self._lightning = list()
         self._fire = list()
         self._times_fire_happened = 0
         self._cat_pos = [height, 0]
@@ -36,6 +36,7 @@ class Game:
                                     CAT: ['`', '`'],
                                     ELECTROCUTED_CAT: ['\\', '\\']
                                     }
+        self.create_clear_board()
 
     def create_clear_board(self) -> None:
         """
@@ -61,6 +62,7 @@ class Game:
                 j += 1
             i += 1
         self._state = state
+        self.update_cat_pos()
 
     def get_cat_pos(self):
         return self._cat_pos
@@ -123,10 +125,11 @@ class Game:
         return self._format_print_game()[0]
 
     def set_lightning(self, falling_pos: int):
-        for element in self._lighting:
+        print(falling_pos)
+        for element in self._lightning:
             if element[1] == falling_pos:
                 return
-        self._lighting.append([0, int(falling_pos)])
+        self._lightning.append([0, int(falling_pos)])
 
     def search(self, parameter: int):
         result = list()
@@ -143,33 +146,28 @@ class Game:
         self._cat_pos[1] += 1
 
     def catch_lightning(self):
-        pass
-
-    def update_game(self) -> None:
-        """
-        :return: None
-
-        Updates the game according to necessary requirements and fulfills all necessary steps to
-        move the game forward according to everything that has been changed
-        """
-        self._update_cat_pos()
-        self._update_lightning()
-        self._update_building()
+        electrocuted = self.search(ELECTROCUTED_CAT)
+        if len(electrocuted) == 1:
+            print(self._remove_lightning(electrocuted[0]))
+            self._lightning.remove(electrocuted[0])
         self._print_game()
 
-    def _update_cat_pos(self):
+    def update_cat_pos(self):
         if self._state[self._cat_pos[0]][self._cat_pos[1]] != CAT:
             todo = self.search(CAT)
             for pos in todo:
                 self._state[pos[0]][pos[1]] = EMPTY
         self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
 
-    def _update_lightning(self):
+    def update_lightning(self):
         added_fire = False
-        for element in self._lighting:
+        print(self._lightning, 'lightning')
+        for element in self._lightning:
             self._remove_lightning(element)
-            if element[1] - 1 < 0:
-                self._lighting.remove(element)
+            if element[1] < 0:
+                self._lightning.remove(element)
+                continue
+            if self._state[element[0]][element[1]] == ON_FIRE:
                 continue
             if self._state[element[0]][element[1]] == BUILDING:
                 if added_fire is False:
@@ -180,7 +178,7 @@ class Game:
                     if item[1] == element[1]:
                         self._state[item[0]][item[1]] = ON_FIRE
                 self._fire.append(element[1])
-                self._lighting.remove(element)
+                self._lightning.remove(element)
                 self._remove_lightning(element)
                 self._first_time = True
                 self._print_game()
@@ -188,16 +186,13 @@ class Game:
             element[0] += 1
             if element[1] < 0 or element[0] >= self._row:
                 continue
+            print(element[1])
             for row in range(element[0]):
-                if self._state[row][element[1]] == CAT:
-                    self._state[row][element[1]] = ELECTROCUTED_CAT
-                    continue
                 self._state[row][element[1]] = LIGHTNING
-
-    def _update_building(self):
-        if self._first_time:
-            self._first_time = False
-            return
+            print(self._cat_pos, "catpos")
+        if self._cat_pos in self._lightning:
+            print('wow')
+            self._state[element[0]][element[1]] = ELECTROCUTED_CAT
 
     def _format_print_game(self) -> [[[str]], int]:
         """

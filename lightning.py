@@ -1,31 +1,12 @@
 import pygame
-import random
-from pygame.sprite import Sprite
+from os.path import join, dirname
 
-class Lightning(Sprite):
-    def __init__(self, screen):
-        super(Lightning, self).__init__()
-        self.screen = screen
+class Lightning:
+    def __init__(self):
+        script_dir = dirname(__file__)
+        self.image = pygame.image.load(join(script_dir, 'image_files', 'lightning.png'))
 
-        #load the lightning  image
-        self.image = pygame.image.load('city_of_clouds/bolt-clipart-transparent-background-6.png')
-
-        #get the lightning rectangle
-        self.lightning = self.image.get_rect()
-        self.screen_rect = screen.get_rect()
-
-        #randomizes x position of
-
-        #creates lightning and sets to correct position
-        self.lightning.bottom = 0
-        self.lightning.centerx = random.randint(0, 600)
-
-    def update(self):
-        """updates position of lightning"""
-        self.lightning.y += 1
-
-    def blitme(self):
-        """draws the lightning on the screen"""
-        self.screen.blit(self.image, self.lightning)
+    def get_lightning(self):
+        return self.image
 
 
