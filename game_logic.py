@@ -130,6 +130,7 @@ class Game:
             if element[1] == falling_pos:
                 return
         self._lightning.append([0, int(falling_pos)])
+        self.update_lightning()
 
     def search(self, parameter: int):
         result = list()
@@ -141,27 +142,37 @@ class Game:
 
     def move_left(self):
         self._cat_pos[1] -= 1
+        if self._cat_pos[1] < 0:
+            self._cat_pos[1] += 1
+        self.update_cat_pos()
 
     def move_right(self):
         self._cat_pos[1] += 1
+        if self._cat_pos[1] >= self._column:
+            self._cat_pos[1] -= 1
+        self.update_cat_pos()
 
     def catch_lightning(self):
         electrocuted = self.search(ELECTROCUTED_CAT)
         if len(electrocuted) == 1:
-            print(self._remove_lightning(electrocuted[0]))
-            self._lightning.remove(electrocuted[0])
-        self._print_game()
+            try:
+                self._lightning.remove(electrocuted[0])
+                self._remove_lightning(electrocuted[0])
+            except ValueError:
+                return
 
     def update_cat_pos(self):
         if self._state[self._cat_pos[0]][self._cat_pos[1]] != CAT:
             todo = self.search(CAT)
             for pos in todo:
                 self._state[pos[0]][pos[1]] = EMPTY
+            todo = self.search(ELECTROCUTED_CAT)
+            for pos in todo:
+                self._state[pos[0]][pos[1]] = EMPTY
         self._state[self._cat_pos[0]][self._cat_pos[1]] = CAT
 
     def update_lightning(self):
         added_fire = False
-        print(self._lightning, 'lightning')
         for element in self._lightning:
             self._remove_lightning(element)
             if element[1] < 0:
@@ -181,17 +192,13 @@ class Game:
                 self._lightning.remove(element)
                 self._remove_lightning(element)
                 self._first_time = True
-                self._print_game()
                 continue
             element[0] += 1
             if element[1] < 0 or element[0] >= self._row:
                 continue
-            print(element[1])
             for row in range(element[0]):
                 self._state[row][element[1]] = LIGHTNING
-            print(self._cat_pos, "catpos")
         if self._cat_pos in self._lightning:
-            print('wow')
             self._state[element[0]][element[1]] = ELECTROCUTED_CAT
 
     def _format_print_game(self) -> [[[str]], int]:

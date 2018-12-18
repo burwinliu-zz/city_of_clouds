@@ -18,6 +18,8 @@ class CloudGame:
         self._block_width = _INITIAL_WIDTH/10
         self._block_height = _INITIAL_HEIGHT/10
         self._game_size = 10
+        self._time = 15
+        self._drop_control = 8
         self._running = True
         self._surface = None
         self._cat = octocat.Octocat()
@@ -32,6 +34,7 @@ class CloudGame:
                                   gl.CLOUD: self._cat.get_cloud(),
                                   gl.CAT: self._cat.get_cat(),
                                   gl.ELECTROCUTED_CAT: self._cat.get_electrocuted_cat()}
+
     def setup_building(self):
         i = 0
         while i < self._game_size:
@@ -44,22 +47,26 @@ class CloudGame:
         pygame.init()
         try:
             clock = pygame.time.Clock()
+            self._create_surface((self.screen_width, self.screen_height))
+            count = 0
+            drop = 0
             while self._running:
                 clock.tick(_FRAME_RATE)
-                self._create_surface((_INITIAL_WIDTH, _INITIAL_HEIGHT))
                 self._handle_events()
                 self._draw_window()
+                if count == self._time:
+                    self._cloud_game.update_lightning()
+                    count = 0
+                    drop += 1
+                    if drop == self._drop_control:
+                        print("entered")
+                        rand_int = random.randint(1, self._game_size - 1)
+                        self._cloud_game.set_lightning(rand_int)
+                        drop = 0
+                    continue
+                count += 1
         finally:
             pygame.quit()
-
-    # Left and right movement
-    def check_key_down_events(self, event):
-        if event.key == pygame.K_RIGHT:
-            self._cloud_game.move_right()
-        elif event.key == pygame.K_LEFT:
-            self._cloud_game.move_left()
-        if event.key == pygame.K_SPACE:
-            self._cloud_game.catch_lightning()
                   
     def _handle_events(self) -> None:
         for event in pygame.event.get():
@@ -70,17 +77,19 @@ class CloudGame:
         if event.type == pygame.QUIT:
             self._stop_program()
         elif event.type == pygame.VIDEORESIZE:
-            self._create_surface(event.size)
+            self._update_values(event.size)
 
     def _handle_keys(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
-            print(self._cloud_game.get_cat_pos())
             self._cloud_game.move_right()
+            self._draw_window()
         if keys[pygame.K_LEFT]:
             self._cloud_game.move_left()
+            self._draw_window()
         if keys[pygame.K_SPACE]:
             self._cloud_game.catch_lightning()
+            self._draw_window()
 
     def _draw_window(self):
         self._surface.fill(_BACKGROUND_COLOR)
@@ -92,28 +101,36 @@ class CloudGame:
             for column in range(self._game_size):
                 rect = self._draw_rect(row, column)
                 game_block = self._cloud_game.get_game()[row][column]
-                self._draw_block(rect, game_block, row)
+                self._draw_block(rect, game_block, column)
 
     def _draw_rect(self, x: int, y: int):
         return pygame.Rect(y * self._block_width, x * self._block_height,
                            self._block_width, self._block_height)
 
-    def _draw_block(self, rect: pygame.Rect, game_block: int, row_number):
+    def _draw_block(self, rect: pygame.Rect, game_block: int, column_number):
         if game_block == gl.BUILDING:
-            key = self._building_images[row_number]
+            key = self._building_images[column_number]
             image = self._block_dictionary[game_block][key]
         elif game_block == gl.EMPTY:
             return
         else:
             image = self._block_dictionary[game_block]
+        pygame.transform.scale(image, (int(self._block_width), int(self._block_height)))
         self._surface.blit(image, rect)
-
 
     def _create_surface(self, size: (int, int)) -> None:
         self._surface = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     def _stop_program(self) -> None:
         self._running = False
+
+    def _update_values(self, values: [int, int]):
+        self.screen_width = values[0]
+        self.screen_height = values[1]
+        self._block_width = self.screen_width/10
+        self._block_height = self.screen_height/10
+        self._create_surface((self.screen_width, self.screen_height))
+        self._draw_window()
 
 
 if __name__ == '__main__':

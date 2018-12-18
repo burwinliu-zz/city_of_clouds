@@ -13,6 +13,7 @@ def run_commands():
         command_two = input().rstrip()
         if command_two is "":
             game.update_lightning()
+            game._print_game()
             continue
         if command_two[0] == 'L':
             game.set_lightning(command_two[2])
